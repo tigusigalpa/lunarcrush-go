@@ -12,7 +12,7 @@ func TestCreatorsService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"creator_name":"elonmusk","creator_network":"twitter","creator_followers":150000000}}`))
+		writeResponse(t, w, `{"data":{"creator_name":"elonmusk","creator_network":"twitter","creator_followers":150000000}}`)
 	})
 	defer srv.Close()
 
@@ -31,7 +31,7 @@ func TestCreatorsService_Posts(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_title":"hello"}]}`))
+		writeResponse(t, w, `{"data":[{"post_title":"hello"}]}`)
 	})
 	defer srv.Close()
 
@@ -50,7 +50,7 @@ func TestCreatorsService_TimeSeries(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000,"interactions":99}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000,"interactions":99}]}`)
 	})
 	defer srv.Close()
 
@@ -69,7 +69,7 @@ func TestCreatorsService_List(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"creator_name":"a"},{"creator_name":"b"}]}`))
+		writeResponse(t, w, `{"data":[{"creator_name":"a"},{"creator_name":"b"}]}`)
 	})
 	defer srv.Close()
 

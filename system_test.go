@@ -12,7 +12,7 @@ func TestSystemService_Changes(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"category":"api","change":"added endpoint","timestamp":1700000000}]}`))
+		writeResponse(t, w, `{"data":[{"category":"api","change":"added endpoint","timestamp":1700000000}]}`)
 	})
 	defer srv.Close()
 
@@ -28,7 +28,7 @@ func TestSystemService_Changes(t *testing.T) {
 func TestSystemService_Changes_Error(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"message":"boom"}`))
+		writeResponse(t, w, `{"message":"boom"}`)
 	})
 	defer srv.Close()
 

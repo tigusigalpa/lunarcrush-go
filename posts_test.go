@@ -15,7 +15,7 @@ func TestPostsService_List(t *testing.T) {
 			t.Errorf("expected topic=bitcoin, got %s", r.URL.Query().Get("topic"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_title":"BTC to the moon"}]}`))
+		writeResponse(t, w, `{"data":[{"post_title":"BTC to the moon"}]}`)
 	})
 	defer srv.Close()
 
@@ -35,7 +35,7 @@ func TestPostsService_TimeSeries(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000,"posts_created":50}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000,"posts_created":50}]}`)
 	})
 	defer srv.Close()
 

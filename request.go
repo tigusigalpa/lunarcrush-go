@@ -46,13 +46,6 @@ func (q *queryValues) setBool(key string, v *bool) {
 	}
 }
 
-// setStringSlice adds key=a,b,c to the query if slice is non-empty.
-func (q *queryValues) setStringSlice(key string, v []string) {
-	if len(v) > 0 {
-		q.values.Set(key, strings.Join(v, ","))
-	}
-}
-
 // Values returns the underlying url.Values.
 func (q *queryValues) Values() url.Values {
 	return q.values
@@ -83,7 +76,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, query url.V
 	}
 
 	fullURL := c.baseURL + path
-	if query != nil && len(query) > 0 {
+	if len(query) > 0 {
 		fullURL += "?" + query.Encode()
 	}
 

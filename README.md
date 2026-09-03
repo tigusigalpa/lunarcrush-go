@@ -1,6 +1,6 @@
 # Lunarcrush Golang Client/SDK/Library
 
-![LunarCrush Golang SDK](https://i.postimg.cc/0QdLHxk1/lunarcrush-go-banner.jpg)
+![LunarCrush Golang SDK](https://i.postimg.cc/j2rcFQ1F/lunarcrush-go-hero-banner.jpg)
 
 [![CI](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/ci.yml)
 [![Tests](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/test.yml)

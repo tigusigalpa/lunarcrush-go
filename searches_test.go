@@ -18,7 +18,7 @@ func TestSearchesService_Create(t *testing.T) {
 			t.Errorf("unexpected search_json: %s", r.URL.Query().Get("search_json"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"slug":"my-search-abc","name":"my-search"}}`))
+		writeResponse(t, w, `{"data":{"slug":"my-search-abc","name":"my-search"}}`)
 	})
 	defer srv.Close()
 
@@ -48,7 +48,7 @@ func TestSearchesService_List(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"slug":"s1"},{"slug":"s2"}]}`))
+		writeResponse(t, w, `{"data":[{"slug":"s1"},{"slug":"s2"}]}`)
 	})
 	defer srv.Close()
 
@@ -67,7 +67,7 @@ func TestSearchesService_Search(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"slug":"ad-hoc"}}`))
+		writeResponse(t, w, `{"data":{"slug":"ad-hoc"}}`)
 	})
 	defer srv.Close()
 
@@ -86,7 +86,7 @@ func TestSearchesService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"slug":"my-search-abc"}}`))
+		writeResponse(t, w, `{"data":{"slug":"my-search-abc"}}`)
 	})
 	defer srv.Close()
 
@@ -108,7 +108,7 @@ func TestSearchesService_Update(t *testing.T) {
 			t.Errorf("expected priority=5, got %s", r.URL.Query().Get("priority"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"slug":"my-search-abc","priority":5}}`))
+		writeResponse(t, w, `{"data":{"slug":"my-search-abc","priority":5}}`)
 	})
 	defer srv.Close()
 
@@ -128,7 +128,7 @@ func TestSearchesService_Delete(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"deleted":true}}`))
+		writeResponse(t, w, `{"data":{"deleted":true}}`)
 	})
 	defer srv.Close()
 

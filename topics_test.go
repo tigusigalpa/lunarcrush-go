@@ -12,7 +12,7 @@ func TestTopicsService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"topic":"bitcoin","interactions_24h":123456}}`))
+		writeResponse(t, w, `{"data":{"topic":"bitcoin","interactions_24h":123456}}`)
 	})
 	defer srv.Close()
 
@@ -34,7 +34,7 @@ func TestTopicsService_TimeSeries(t *testing.T) {
 			t.Errorf("expected bucket=hour, got %s", r.URL.Query().Get("bucket"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000,"interactions":42}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000,"interactions":42}]}`)
 	})
 	defer srv.Close()
 
@@ -54,7 +54,7 @@ func TestTopicsService_TimeSeriesV2(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000}]}`)
 	})
 	defer srv.Close()
 
@@ -73,7 +73,7 @@ func TestTopicsService_Creators(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"creator_name":"elonmusk","creator_network":"twitter"}]}`))
+		writeResponse(t, w, `{"data":[{"creator_name":"elonmusk","creator_network":"twitter"}]}`)
 	})
 	defer srv.Close()
 
@@ -92,7 +92,7 @@ func TestTopicsService_News(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_title":"Bitcoin hits new high"}]}`))
+		writeResponse(t, w, `{"data":[{"post_title":"Bitcoin hits new high"}]}`)
 	})
 	defer srv.Close()
 
@@ -111,7 +111,7 @@ func TestTopicsService_Posts(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_type":"tweet"}]}`))
+		writeResponse(t, w, `{"data":[{"post_type":"tweet"}]}`)
 	})
 	defer srv.Close()
 
@@ -130,7 +130,7 @@ func TestTopicsService_WhatsUp(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"topic":"bitcoin","summary":"Bitcoin is trending"}}`))
+		writeResponse(t, w, `{"data":{"topic":"bitcoin","summary":"Bitcoin is trending"}}`)
 	})
 	defer srv.Close()
 
@@ -149,7 +149,7 @@ func TestTopicsService_List(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"topic":"bitcoin"},{"topic":"ethereum"}]}`))
+		writeResponse(t, w, `{"data":[{"topic":"bitcoin"},{"topic":"ethereum"}]}`)
 	})
 	defer srv.Close()
 

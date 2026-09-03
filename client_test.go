@@ -20,6 +20,15 @@ func newTestClient(t *testing.T, handler http.HandlerFunc, opts ...Option) (*Cli
 	return c, srv
 }
 
+// writeResponse writes an HTTP response body and reports an unexpected write
+// failure to the active test.
+func writeResponse(t *testing.T, w http.ResponseWriter, body string) {
+	t.Helper()
+	if _, err := w.Write([]byte(body)); err != nil {
+		t.Errorf("failed to write test response: %v", err)
+	}
+}
+
 func TestNewClient_Defaults(t *testing.T) {
 	c := NewClient("key")
 	if c.baseURL != DefaultBaseURL {
@@ -68,7 +77,7 @@ func TestWithBaseURL_TrailingSlash(t *testing.T) {
 			t.Errorf("expected path %q, got %q", want, got)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"topic":"bitcoin"}}`))
+		writeResponse(t, w, `{"data":{"topic":"bitcoin"}}`)
 	}))
 	defer srv.Close()
 
@@ -84,7 +93,7 @@ func TestPathParametersAreEscaped(t *testing.T) {
 			t.Errorf("expected escaped path %q, got %q", want, got)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{}}`))
+		writeResponse(t, w, `{"data":{}}`)
 	})
 	defer srv.Close()
 
@@ -111,7 +120,7 @@ func TestDoRequest_RetryPreservesRequestBody(t *testing.T) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{}}`))
+		writeResponse(t, w, `{"data":{}}`)
 	}, WithRetry(2, time.Millisecond))
 	defer srv.Close()
 
@@ -131,11 +140,11 @@ func TestDoRequest_Retry429(t *testing.T) {
 		if attempts < 3 {
 			w.Header().Set("Retry-After", "0")
 			w.WriteHeader(http.StatusTooManyRequests)
-			w.Write([]byte(`{"message":"rate limited"}`))
+			writeResponse(t, w, `{"message":"rate limited"}`)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"topic":"bitcoin"}}`))
+		writeResponse(t, w, `{"data":{"topic":"bitcoin"}}`)
 	}, WithRetry(5, 10*time.Millisecond))
 	defer srv.Close()
 
@@ -154,7 +163,7 @@ func TestDoRequest_Retry429(t *testing.T) {
 func TestDoRequest_RateLimitedExhausted(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusTooManyRequests)
-		w.Write([]byte(`{"message":"rate limited"}`))
+		writeResponse(t, w, `{"message":"rate limited"}`)
 	}, WithRetry(2, 5*time.Millisecond))
 	defer srv.Close()
 
@@ -176,7 +185,7 @@ func TestDoRequest_RateLimitedExhausted(t *testing.T) {
 func TestDoRequest_Unauthorized(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"message":"invalid api key"}`))
+		writeResponse(t, w, `{"message":"invalid api key"}`)
 	})
 	defer srv.Close()
 
@@ -189,7 +198,7 @@ func TestDoRequest_Unauthorized(t *testing.T) {
 func TestDoRequest_NotFound(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(`{"message":"not found"}`))
+		writeResponse(t, w, `{"message":"not found"}`)
 	})
 	defer srv.Close()
 
@@ -203,7 +212,7 @@ func TestDoRequest_ContextCancellation(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(200 * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{}}`))
+		writeResponse(t, w, `{"data":{}}`)
 	})
 	defer srv.Close()
 
@@ -225,7 +234,7 @@ func TestDoRequest_AuthorizationHeader(t *testing.T) {
 			t.Errorf("expected Authorization header 'Bearer test-api-key', got %q", got)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{}}`))
+		writeResponse(t, w, `{"data":{}}`)
 	})
 	defer srv.Close()
 

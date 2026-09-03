@@ -12,7 +12,7 @@ func TestStocksService_List(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"symbol":"NVDA","price":120.5}]}`))
+		writeResponse(t, w, `{"data":[{"symbol":"NVDA","price":120.5}]}`)
 	})
 	defer srv.Close()
 
@@ -31,7 +31,7 @@ func TestStocksService_ListV2(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"symbol":"AAPL"}]}`))
+		writeResponse(t, w, `{"data":[{"symbol":"AAPL"}]}`)
 	})
 	defer srv.Close()
 
@@ -51,7 +51,7 @@ func TestStocksService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"symbol":"NVDA","galaxy_score":80}}`))
+		writeResponse(t, w, `{"data":{"symbol":"NVDA","galaxy_score":80}}`)
 	})
 	defer srv.Close()
 
@@ -70,7 +70,7 @@ func TestStocksService_TimeSeries(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000,"close":120.5}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000,"close":120.5}]}`)
 	})
 	defer srv.Close()
 
@@ -86,7 +86,7 @@ func TestStocksService_TimeSeries(t *testing.T) {
 func TestStocksService_Get_ServerError(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"message":"internal error"}`))
+		writeResponse(t, w, `{"message":"internal error"}`)
 	})
 	defer srv.Close()
 

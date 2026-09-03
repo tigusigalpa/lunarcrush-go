@@ -12,7 +12,7 @@ func TestCategoriesService_List(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"category":"defi"}]}`))
+		writeResponse(t, w, `{"data":[{"category":"defi"}]}`)
 	})
 	defer srv.Close()
 
@@ -31,7 +31,7 @@ func TestCategoriesService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"category":"defi","sentiment":0.8}}`))
+		writeResponse(t, w, `{"data":{"category":"defi","sentiment":0.8}}`)
 	})
 	defer srv.Close()
 
@@ -50,7 +50,7 @@ func TestCategoriesService_Creators(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"creator_name":"c1"}]}`))
+		writeResponse(t, w, `{"data":[{"creator_name":"c1"}]}`)
 	})
 	defer srv.Close()
 
@@ -69,7 +69,7 @@ func TestCategoriesService_News(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_title":"DeFi news"}]}`))
+		writeResponse(t, w, `{"data":[{"post_title":"DeFi news"}]}`)
 	})
 	defer srv.Close()
 
@@ -88,7 +88,7 @@ func TestCategoriesService_Posts(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"post_type":"tweet"}]}`))
+		writeResponse(t, w, `{"data":[{"post_type":"tweet"}]}`)
 	})
 	defer srv.Close()
 
@@ -107,7 +107,7 @@ func TestCategoriesService_TimeSeries(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000}]}`)
 	})
 	defer srv.Close()
 
@@ -126,7 +126,7 @@ func TestCategoriesService_Topics(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"topic":"uniswap"}]}`))
+		writeResponse(t, w, `{"data":[{"topic":"uniswap"}]}`)
 	})
 	defer srv.Close()
 

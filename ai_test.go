@@ -12,7 +12,7 @@ func TestAIService_Topic(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"subject":"bitcoin","summary":"Bullish sentiment overall."}}`))
+		writeResponse(t, w, `{"data":{"subject":"bitcoin","summary":"Bullish sentiment overall."}}`)
 	})
 	defer srv.Close()
 
@@ -31,7 +31,7 @@ func TestAIService_Creator(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"subject":"elonmusk","summary":"High engagement creator."}}`))
+		writeResponse(t, w, `{"data":{"subject":"elonmusk","summary":"High engagement creator."}}`)
 	})
 	defer srv.Close()
 

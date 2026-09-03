@@ -15,7 +15,7 @@ func TestCoinsService_List(t *testing.T) {
 			t.Errorf("expected sort=galaxy_score, got %s", r.URL.Query().Get("sort"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"symbol":"BTC","name":"Bitcoin","galaxy_score":75.5}]}`))
+		writeResponse(t, w, `{"data":[{"symbol":"BTC","name":"Bitcoin","galaxy_score":75.5}]}`)
 	})
 	defer srv.Close()
 
@@ -36,7 +36,7 @@ func TestCoinsService_ListV2(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"symbol":"ETH"}]}`))
+		writeResponse(t, w, `{"data":[{"symbol":"ETH"}]}`)
 	})
 	defer srv.Close()
 
@@ -55,7 +55,7 @@ func TestCoinsService_Get(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"symbol":"BTC","price":65000.5}}`))
+		writeResponse(t, w, `{"data":{"symbol":"BTC","price":65000.5}}`)
 	})
 	defer srv.Close()
 
@@ -74,7 +74,7 @@ func TestCoinsService_Meta(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":{"symbol":"BTC","description":"digital gold"}}`))
+		writeResponse(t, w, `{"data":{"symbol":"BTC","description":"digital gold"}}`)
 	})
 	defer srv.Close()
 
@@ -96,7 +96,7 @@ func TestCoinsService_TimeSeries(t *testing.T) {
 			t.Errorf("expected interval=1w, got %s", r.URL.Query().Get("interval"))
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"data":[{"time":1700000000,"close":65000.0}]}`))
+		writeResponse(t, w, `{"data":[{"time":1700000000,"close":65000.0}]}`)
 	})
 	defer srv.Close()
 
@@ -113,7 +113,7 @@ func TestCoinsService_TimeSeries(t *testing.T) {
 func TestCoinsService_Get_NotFound(t *testing.T) {
 	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(`{"message":"coin not found"}`))
+		writeResponse(t, w, `{"message":"coin not found"}`)
 	})
 	defer srv.Close()
 
