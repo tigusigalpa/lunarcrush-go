@@ -14,15 +14,15 @@ type CreatorsService struct {
 // CreatorProfile represents a detailed social media creator profile as
 // returned by GET /public/creator/:network/:id/v1.
 type CreatorProfile struct {
-	CreatorID          string  `json:"creator_id,omitempty"`
-	CreatorName        string  `json:"creator_name,omitempty"`
-	CreatorDisplayName string  `json:"creator_display_name,omitempty"`
-	CreatorAvatar      string  `json:"creator_avatar,omitempty"`
-	Network            string  `json:"creator_network,omitempty"`
-	FollowerCount      float64 `json:"creator_followers,omitempty"`
-	Interactions24h    float64 `json:"interactions_24h,omitempty"`
-	PostCount24h       int     `json:"creator_posts_24h,omitempty"`
-	Rank               int     `json:"creator_rank,omitempty"`
+	CreatorID          string   `json:"creator_id,omitempty"`
+	CreatorName        string   `json:"creator_name,omitempty"`
+	CreatorDisplayName string   `json:"creator_display_name,omitempty"`
+	CreatorAvatar      string   `json:"creator_avatar,omitempty"`
+	Network            string   `json:"creator_network,omitempty"`
+	FollowerCount      float64  `json:"creator_followers,omitempty"`
+	Interactions24h    float64  `json:"interactions_24h,omitempty"`
+	PostCount24h       int      `json:"creator_posts_24h,omitempty"`
+	Rank               int      `json:"creator_rank,omitempty"`
 	TopicsCovered      []string `json:"topics,omitempty"`
 }
 
@@ -59,7 +59,7 @@ type CreatorsListResponse struct {
 // include "twitter", "youtube", "instagram", "reddit", and "tiktok".
 func (s *CreatorsService) Get(ctx context.Context, network, id string) (*CreatorResponse, error) {
 	var out CreatorResponse
-	path := fmt.Sprintf("/public/creator/%s/%s/v1", network, id)
+	path := fmt.Sprintf("/public/creator/%s/%s/v1", escapePathSegment(network), escapePathSegment(id))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (s *CreatorsService) Get(ctx context.Context, network, id string) (*Creator
 // GET /public/creator/:network/:id/posts/v1.
 func (s *CreatorsService) Posts(ctx context.Context, network, id string) (*CreatorPostsResponse, error) {
 	var out CreatorPostsResponse
-	path := fmt.Sprintf("/public/creator/%s/%s/posts/v1", network, id)
+	path := fmt.Sprintf("/public/creator/%s/%s/posts/v1", escapePathSegment(network), escapePathSegment(id))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (s *CreatorsService) Posts(ctx context.Context, network, id string) (*Creat
 // GET /public/creator/:network/:id/time-series/v1.
 func (s *CreatorsService) TimeSeries(ctx context.Context, network, id string, params *TimeSeriesParams) (*CreatorTimeSeriesResponse, error) {
 	var out CreatorTimeSeriesResponse
-	path := fmt.Sprintf("/public/creator/%s/%s/time-series/v1", network, id)
+	path := fmt.Sprintf("/public/creator/%s/%s/time-series/v1", escapePathSegment(network), escapePathSegment(id))
 	if err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out); err != nil {
 		return nil, err
 	}

@@ -130,7 +130,7 @@ func (s *SearchesService) Search(ctx context.Context, searchJSON string) (*Searc
 // Get retrieves a saved search by its slug: GET /public/searches/:slug.
 func (s *SearchesService) Get(ctx context.Context, slug string) (*SearchResponse, error) {
 	var out SearchResponse
-	path := fmt.Sprintf("/public/searches/%s", slug)
+	path := fmt.Sprintf("/public/searches/%s", escapePathSegment(slug))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func (s *SearchesService) Get(ctx context.Context, slug string) (*SearchResponse
 // GET /public/searches/:slug/update.
 func (s *SearchesService) Update(ctx context.Context, slug string, params *SearchUpdateParams) (*SearchResponse, error) {
 	var out SearchResponse
-	path := fmt.Sprintf("/public/searches/%s/update", slug)
+	path := fmt.Sprintf("/public/searches/%s/update", escapePathSegment(slug))
 	if err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out); err != nil {
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (s *SearchesService) Update(ctx context.Context, slug string, params *Searc
 // Delete removes a saved search: GET /public/searches/:slug/delete.
 func (s *SearchesService) Delete(ctx context.Context, slug string) (*SearchDeleteResponse, error) {
 	var out SearchDeleteResponse
-	path := fmt.Sprintf("/public/searches/%s/delete", slug)
+	path := fmt.Sprintf("/public/searches/%s/delete", escapePathSegment(slug))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}

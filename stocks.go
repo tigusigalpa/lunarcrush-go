@@ -103,7 +103,7 @@ func (s *StocksService) ListV2(ctx context.Context, params *StocksListParams) (*
 // GET /public/stocks/:stock/v1.
 func (s *StocksService) Get(ctx context.Context, stock string) (*StockResponse, error) {
 	var out StockResponse
-	path := fmt.Sprintf("/public/stocks/%s/v1", stock)
+	path := fmt.Sprintf("/public/stocks/%s/v1", escapePathSegment(stock))
 	err := s.client.doRequest(ctx, "GET", path, nil, nil, &out)
 	if err != nil {
 		return nil, err
@@ -115,7 +115,7 @@ func (s *StocksService) Get(ctx context.Context, stock string) (*StockResponse, 
 // GET /public/stocks/:stock/time-series/v2.
 func (s *StocksService) TimeSeries(ctx context.Context, stock string, params *TimeSeriesParams) (*StockTimeSeriesResponse, error) {
 	var out StockTimeSeriesResponse
-	path := fmt.Sprintf("/public/stocks/%s/time-series/v2", stock)
+	path := fmt.Sprintf("/public/stocks/%s/time-series/v2", escapePathSegment(stock))
 	err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out)
 	if err != nil {
 		return nil, err

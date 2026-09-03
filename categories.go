@@ -89,7 +89,7 @@ func (s *CategoriesService) List(ctx context.Context) (*CategoriesListResponse, 
 // GET /public/category/:category/v1.
 func (s *CategoriesService) Get(ctx context.Context, category string) (*CategoryResponse, error) {
 	var out CategoryResponse
-	path := fmt.Sprintf("/public/category/%s/v1", category)
+	path := fmt.Sprintf("/public/category/%s/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (s *CategoriesService) Get(ctx context.Context, category string) (*Category
 // GET /public/category/:category/creators/v1.
 func (s *CategoriesService) Creators(ctx context.Context, category string) (*CategoryCreatorsResponse, error) {
 	var out CategoryCreatorsResponse
-	path := fmt.Sprintf("/public/category/%s/creators/v1", category)
+	path := fmt.Sprintf("/public/category/%s/creators/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (s *CategoriesService) Creators(ctx context.Context, category string) (*Cat
 // GET /public/category/:category/news/v1.
 func (s *CategoriesService) News(ctx context.Context, category string) (*CategoryNewsResponse, error) {
 	var out CategoryNewsResponse
-	path := fmt.Sprintf("/public/category/%s/news/v1", category)
+	path := fmt.Sprintf("/public/category/%s/news/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (s *CategoriesService) News(ctx context.Context, category string) (*Categor
 // GET /public/category/:category/posts/v1.
 func (s *CategoriesService) Posts(ctx context.Context, category string) (*CategoryPostsResponse, error) {
 	var out CategoryPostsResponse
-	path := fmt.Sprintf("/public/category/%s/posts/v1", category)
+	path := fmt.Sprintf("/public/category/%s/posts/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (s *CategoriesService) Posts(ctx context.Context, category string) (*Catego
 // GET /public/category/:category/time-series/v1.
 func (s *CategoriesService) TimeSeries(ctx context.Context, category string, params *TimeSeriesParams) (*CategoryTimeSeriesResponse, error) {
 	var out CategoryTimeSeriesResponse
-	path := fmt.Sprintf("/public/category/%s/time-series/v1", category)
+	path := fmt.Sprintf("/public/category/%s/time-series/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out); err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func (s *CategoriesService) TimeSeries(ctx context.Context, category string, par
 // GET /public/category/:category/topics/v1.
 func (s *CategoriesService) Topics(ctx context.Context, category string) (*CategoryTopicsResponse, error) {
 	var out CategoryTopicsResponse
-	path := fmt.Sprintf("/public/category/%s/topics/v1", category)
+	path := fmt.Sprintf("/public/category/%s/topics/v1", escapePathSegment(category))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}

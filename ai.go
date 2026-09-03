@@ -37,7 +37,7 @@ type AICreatorResponse struct {
 // GET /public/ai/topic/:topic.
 func (s *AIService) Topic(ctx context.Context, topic string) (*AITopicResponse, error) {
 	var out AITopicResponse
-	path := fmt.Sprintf("/public/ai/topic/%s", topic)
+	path := fmt.Sprintf("/public/ai/topic/%s", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (s *AIService) Topic(ctx context.Context, topic string) (*AITopicResponse, 
 // GET /public/ai/creator/:network/:id.
 func (s *AIService) Creator(ctx context.Context, network, id string) (*AICreatorResponse, error) {
 	var out AICreatorResponse
-	path := fmt.Sprintf("/public/ai/creator/%s/%s", network, id)
+	path := fmt.Sprintf("/public/ai/creator/%s/%s", escapePathSegment(network), escapePathSegment(id))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}

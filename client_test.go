@@ -2,6 +2,7 @@ package lunarcrush
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -58,6 +59,68 @@ func TestNewClient_Options(t *testing.T) {
 	}
 	if c.baseDelay != 100*time.Millisecond {
 		t.Errorf("expected baseDelay 100ms, got %s", c.baseDelay)
+	}
+}
+
+func TestWithBaseURL_TrailingSlash(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if got, want := r.URL.Path, "/public/topic/bitcoin/v1"; got != want {
+			t.Errorf("expected path %q, got %q", want, got)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"data":{"topic":"bitcoin"}}`))
+	}))
+	defer srv.Close()
+
+	c := NewClient("test-api-key", WithBaseURL(srv.URL+"/"))
+	if _, err := c.Topics.Get(context.Background(), "bitcoin"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestPathParametersAreEscaped(t *testing.T) {
+	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if got, want := r.URL.EscapedPath(), "/public/topic/a%2Fb%3Fc%23d%20e/v1"; got != want {
+			t.Errorf("expected escaped path %q, got %q", want, got)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"data":{}}`))
+	})
+	defer srv.Close()
+
+	if _, err := c.Topics.Get(context.Background(), "a/b?c#d e"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestDoRequest_RetryPreservesRequestBody(t *testing.T) {
+	attempts := 0
+	c, srv := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		attempts++
+		defer r.Body.Close()
+		var body map[string]string
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatalf("failed to decode request body on attempt %d: %v", attempts, err)
+		}
+		if got, want := body["name"], "saved search"; got != want {
+			t.Errorf("expected body name %q, got %q", want, got)
+		}
+		if attempts == 1 {
+			w.Header().Set("Retry-After", "0")
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"data":{}}`))
+	}, WithRetry(2, time.Millisecond))
+	defer srv.Close()
+
+	var out map[string]interface{}
+	if err := c.doRequest(context.Background(), http.MethodPost, "/test", nil, map[string]string{"name": "saved search"}, &out); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if attempts != 2 {
+		t.Errorf("expected 2 attempts, got %d", attempts)
 	}
 }
 

@@ -58,6 +58,13 @@ func (q *queryValues) Values() url.Values {
 	return q.values
 }
 
+// escapePathSegment escapes a caller-provided value that occupies one URL path
+// segment. This prevents characters such as '/', '?', and '#' from changing
+// the endpoint being requested.
+func escapePathSegment(value string) string {
+	return url.PathEscape(value)
+}
+
 // doRequest performs an HTTP request against the LunarCrush API and
 // decodes the JSON response body into out (if non-nil). It handles
 // authentication, query string construction, JSON error mapping, and
@@ -66,13 +73,13 @@ func (q *queryValues) Values() url.Values {
 // path must be an absolute path beginning with "/" relative to the
 // client's configured base URL, e.g. "/public/topic/bitcoin/v1".
 func (c *Client) doRequest(ctx context.Context, method, path string, query url.Values, body interface{}, out interface{}) error {
-	var bodyReader io.Reader
+	var bodyBytes []byte
 	if body != nil {
-		buf, err := json.Marshal(body)
+		var err error
+		bodyBytes, err = json.Marshal(body)
 		if err != nil {
 			return fmt.Errorf("lunarcrush: failed to marshal request body: %w", err)
 		}
-		bodyReader = bytes.NewReader(buf)
 	}
 
 	fullURL := c.baseURL + path
@@ -89,6 +96,13 @@ func (c *Client) doRequest(ctx context.Context, method, path string, query url.V
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		if err := ctx.Err(); err != nil {
 			return err
+		}
+
+		var bodyReader io.Reader
+		if body != nil {
+			// A request consumes its reader. Recreate it for every retry so that
+			// a retried request has the same body as the original request.
+			bodyReader = bytes.NewReader(bodyBytes)
 		}
 
 		req, err := http.NewRequestWithContext(ctx, method, fullURL, bodyReader)

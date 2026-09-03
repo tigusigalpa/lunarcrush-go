@@ -41,20 +41,20 @@ func (p *TimeSeriesParams) toQuery() *queryValues {
 // Topic represents the 24-hour social activity summary for a topic
 // (e.g. a keyword, hashtag, or ticker symbol).
 type Topic struct {
-	Topic              string  `json:"topic,omitempty"`
-	Title              string  `json:"title,omitempty"`
-	TopicRank          int     `json:"topic_rank,omitempty"`
-	Interactions24h    float64 `json:"interactions_24h,omitempty"`
-	NumContributors    int     `json:"num_contributors,omitempty"`
-	NumPosts           int     `json:"num_posts,omitempty"`
-	SocialVolume24h    float64 `json:"social_volume_24h,omitempty"`
-	SocialDominance    float64 `json:"social_dominance,omitempty"`
-	Sentiment          float64 `json:"sentiment,omitempty"`
-	Categories         []string `json:"categories,omitempty"`
-	TrendDirection     string  `json:"trend,omitempty"`
-	TypesCount         map[string]int     `json:"types_count,omitempty"`
-	TypesInteractions  map[string]float64 `json:"types_interactions,omitempty"`
-	TypesSentiment     map[string]float64 `json:"types_sentiment,omitempty"`
+	Topic             string             `json:"topic,omitempty"`
+	Title             string             `json:"title,omitempty"`
+	TopicRank         int                `json:"topic_rank,omitempty"`
+	Interactions24h   float64            `json:"interactions_24h,omitempty"`
+	NumContributors   int                `json:"num_contributors,omitempty"`
+	NumPosts          int                `json:"num_posts,omitempty"`
+	SocialVolume24h   float64            `json:"social_volume_24h,omitempty"`
+	SocialDominance   float64            `json:"social_dominance,omitempty"`
+	Sentiment         float64            `json:"sentiment,omitempty"`
+	Categories        []string           `json:"categories,omitempty"`
+	TrendDirection    string             `json:"trend,omitempty"`
+	TypesCount        map[string]int     `json:"types_count,omitempty"`
+	TypesInteractions map[string]float64 `json:"types_interactions,omitempty"`
+	TypesSentiment    map[string]float64 `json:"types_sentiment,omitempty"`
 }
 
 // TopicResponse is the response envelope returned by the topic summary
@@ -169,7 +169,7 @@ type TopicsListResponse struct {
 // GET /public/topic/:topic/v1.
 func (s *TopicsService) Get(ctx context.Context, topic string) (*TopicResponse, error) {
 	var out TopicResponse
-	path := fmt.Sprintf("/public/topic/%s/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func (s *TopicsService) Get(ctx context.Context, topic string) (*TopicResponse, 
 // v1 endpoint: GET /public/topic/:topic/time-series/v1.
 func (s *TopicsService) TimeSeries(ctx context.Context, topic string, params *TimeSeriesParams) (*TopicTimeSeriesResponse, error) {
 	var out TopicTimeSeriesResponse
-	path := fmt.Sprintf("/public/topic/%s/time-series/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/time-series/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out); err != nil {
 		return nil, err
 	}
@@ -191,7 +191,7 @@ func (s *TopicsService) TimeSeries(ctx context.Context, topic string, params *Ti
 // the v2 endpoint: GET /public/topic/:topic/time-series/v2.
 func (s *TopicsService) TimeSeriesV2(ctx context.Context, topic string, params *TimeSeriesParams) (*TopicTimeSeriesResponse, error) {
 	var out TopicTimeSeriesResponse
-	path := fmt.Sprintf("/public/topic/%s/time-series/v2", topic)
+	path := fmt.Sprintf("/public/topic/%s/time-series/v2", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, params.toQuery().Values(), nil, &out); err != nil {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func (s *TopicsService) TimeSeriesV2(ctx context.Context, topic string, params *
 // GET /public/topic/:topic/creators/v1.
 func (s *TopicsService) Creators(ctx context.Context, topic string) (*TopicCreatorsResponse, error) {
 	var out TopicCreatorsResponse
-	path := fmt.Sprintf("/public/topic/%s/creators/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/creators/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -213,7 +213,7 @@ func (s *TopicsService) Creators(ctx context.Context, topic string) (*TopicCreat
 // GET /public/topic/:topic/news/v1.
 func (s *TopicsService) News(ctx context.Context, topic string) (*TopicNewsResponse, error) {
 	var out TopicNewsResponse
-	path := fmt.Sprintf("/public/topic/%s/news/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/news/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func (s *TopicsService) News(ctx context.Context, topic string) (*TopicNewsRespo
 // GET /public/topic/:topic/posts/v1.
 func (s *TopicsService) Posts(ctx context.Context, topic string) (*TopicPostsResponse, error) {
 	var out TopicPostsResponse
-	path := fmt.Sprintf("/public/topic/%s/posts/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/posts/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
@@ -235,7 +235,7 @@ func (s *TopicsService) Posts(ctx context.Context, topic string) (*TopicPostsRes
 // topic: GET /public/topic/:topic/whatsup/v1.
 func (s *TopicsService) WhatsUp(ctx context.Context, topic string) (*TopicWhatsUpResponse, error) {
 	var out TopicWhatsUpResponse
-	path := fmt.Sprintf("/public/topic/%s/whatsup/v1", topic)
+	path := fmt.Sprintf("/public/topic/%s/whatsup/v1", escapePathSegment(topic))
 	if err := s.client.doRequest(ctx, "GET", path, nil, nil, &out); err != nil {
 		return nil, err
 	}
