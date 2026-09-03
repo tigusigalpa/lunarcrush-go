@@ -1,6 +1,15 @@
-# lunarcrush-go
+# Lunarcrush Golang Client/SDK/Library
 
 ![LunarCrush Golang SDK](https://i.postimg.cc/0QdLHxk1/lunarcrush-go-banner.jpg)
+
+[![CI](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/ci.yml)
+[![Tests](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/test.yml)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat-square&logo=go)](https://golang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![CodeQL](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/lunarcrush-go/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/tigusigalpa/lunarcrush-go/graph/badge.svg)](https://codecov.io/gh/tigusigalpa/lunarcrush-go)
+[![GitHub Release](https://img.shields.io/github/v/release/tigusigalpa/lunarcrush-go?style=flat-square)](https://github.com/tigusigalpa/lunarcrush-go/releases)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue?style=flat-square&logo=go)](https://pkg.go.dev/github.com/tigusigalpa/lunarcrush-go)
 
 > **Social + market intelligence, idiomatically written in Go.**
 
@@ -8,11 +17,6 @@ Welcome to `lunarcrush-go`, a friendly and fast Go SDK for the [LunarCrush API v
 you are building a trading dashboard, tracking crypto sentiment, or analyzing how a stock is trending on social media,
 this library gives you clean, typed, and production-ready access to every LunarCrush endpoint — without pulling in a
 single third-party dependency.
-
-[![Go Version](https://img.shields.io/badge/go-%3E%3D1.21-00ADD8?logo=go)](https://go.dev/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/tigusigalpa/lunarcrush-go.svg)](https://pkg.go.dev/github.com/tigusigalpa/lunarcrush-go)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](.)
 
 ## What you get
 
