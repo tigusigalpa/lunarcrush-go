@@ -45,6 +45,8 @@ does best.
 
 ## Getting started in 60 seconds
 
+For ready-to-run programs, see the [`examples`](examples) directory.
+
 Here is a tiny, complete program you can run right away. Just replace `YOUR_API_KEY` with your real LunarCrush key:
 
 ```go
