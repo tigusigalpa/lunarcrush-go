@@ -140,9 +140,12 @@ func (c *Client) doRequest(ctx context.Context, method, path string, query url.V
 		}
 
 		respBody, readErr := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		closeErr := resp.Body.Close()
 		if readErr != nil {
 			return fmt.Errorf("lunarcrush: failed to read response body: %w", readErr)
+		}
+		if closeErr != nil {
+			return fmt.Errorf("lunarcrush: failed to close response body: %w", closeErr)
 		}
 
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
