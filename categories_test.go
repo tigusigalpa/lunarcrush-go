@@ -77,7 +77,7 @@ func TestCategoriesService_News(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].PostTitle != "DeFi news" {
+	if len(resp.Data) != 1 || resp.Data[0].PostTitle == nil || *resp.Data[0].PostTitle != "DeFi news" {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }

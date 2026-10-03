@@ -39,7 +39,7 @@ func TestCreatorsService_Posts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].PostTitle != "hello" {
+	if len(resp.Data) != 1 || resp.Data[0].PostTitle == nil || *resp.Data[0].PostTitle != "hello" {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }

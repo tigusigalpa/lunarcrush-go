@@ -100,7 +100,7 @@ func TestTopicsService_News(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].PostTitle != "Bitcoin hits new high" {
+	if len(resp.Data) != 1 || resp.Data[0].PostTitle == nil || *resp.Data[0].PostTitle != "Bitcoin hits new high" {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }
@@ -119,7 +119,7 @@ func TestTopicsService_Posts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].PostType != "tweet" {
+	if len(resp.Data) != 1 || resp.Data[0].PostType == nil || *resp.Data[0].PostType != "tweet" {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }

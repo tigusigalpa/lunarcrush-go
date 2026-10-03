@@ -20,6 +20,28 @@ type queryValues struct {
 	values url.Values
 }
 
+// rawReceipt stores the exact response bytes associated with a decoded SDK
+// response. It gives callers an immutable copy of the provider payload for
+// provenance, unknown fields, and exact numeric lexemes that are not preserved
+// by the convenience DTO fields.
+type rawReceipt struct {
+	body json.RawMessage
+}
+
+func (r *rawReceipt) setRawResponse(body []byte) {
+	r.body = append(r.body[:0], body...)
+}
+
+// RawResponse returns a copy of the exact response body decoded by the SDK.
+// Mutating the returned slice does not change the receipt kept by the response.
+func (r *rawReceipt) RawResponse() json.RawMessage {
+	return append(json.RawMessage(nil), r.body...)
+}
+
+type rawResponseSetter interface {
+	setRawResponse([]byte)
+}
+
 // newQueryValues creates an empty queryValues helper.
 func newQueryValues() *queryValues {
 	return &queryValues{values: url.Values{}}
@@ -127,6 +149,9 @@ func (c *Client) doRequest(ctx context.Context, method, path string, query url.V
 			if out != nil && len(respBody) > 0 {
 				if err := json.Unmarshal(respBody, out); err != nil {
 					return fmt.Errorf("lunarcrush: failed to decode response body: %w", err)
+				}
+				if receiver, ok := out.(rawResponseSetter); ok {
+					receiver.setRawResponse(respBody)
 				}
 			}
 			return nil

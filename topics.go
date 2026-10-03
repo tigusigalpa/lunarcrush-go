@@ -41,20 +41,22 @@ func (p *TimeSeriesParams) toQuery() *queryValues {
 // Topic represents the 24-hour social activity summary for a topic
 // (e.g. a keyword, hashtag, or ticker symbol).
 type Topic struct {
-	Topic             string             `json:"topic,omitempty"`
-	Title             string             `json:"title,omitempty"`
-	TopicRank         int                `json:"topic_rank,omitempty"`
-	Interactions24h   float64            `json:"interactions_24h,omitempty"`
-	NumContributors   int                `json:"num_contributors,omitempty"`
-	NumPosts          int                `json:"num_posts,omitempty"`
-	SocialVolume24h   float64            `json:"social_volume_24h,omitempty"`
-	SocialDominance   float64            `json:"social_dominance,omitempty"`
-	Sentiment         float64            `json:"sentiment,omitempty"`
-	Categories        []string           `json:"categories,omitempty"`
-	TrendDirection    string             `json:"trend,omitempty"`
-	TypesCount        map[string]int     `json:"types_count,omitempty"`
-	TypesInteractions map[string]float64 `json:"types_interactions,omitempty"`
-	TypesSentiment    map[string]float64 `json:"types_sentiment,omitempty"`
+	Topic                string                        `json:"topic,omitempty"`
+	Title                string                        `json:"title,omitempty"`
+	TopicRank            int                           `json:"topic_rank,omitempty"`
+	Interactions24h      float64                       `json:"interactions_24h,omitempty"`
+	NumContributors      int                           `json:"num_contributors,omitempty"`
+	NumPosts             int                           `json:"num_posts,omitempty"`
+	SocialVolume24h      float64                       `json:"social_volume_24h,omitempty"`
+	SocialDominance      float64                       `json:"social_dominance,omitempty"`
+	Sentiment            float64                       `json:"sentiment,omitempty"`
+	Categories           []string                      `json:"categories,omitempty"`
+	RelatedTopics        []string                      `json:"related_topics,omitempty"`
+	TrendDirection       string                        `json:"trend,omitempty"`
+	TypesCount           map[string]int                `json:"types_count,omitempty"`
+	TypesInteractions    map[string]float64            `json:"types_interactions,omitempty"`
+	TypesSentiment       map[string]float64            `json:"types_sentiment,omitempty"`
+	TypesSentimentDetail map[string]map[string]float64 `json:"types_sentiment_detail,omitempty"`
 }
 
 // TopicResponse is the response envelope returned by the topic summary
@@ -62,6 +64,7 @@ type Topic struct {
 type TopicResponse struct {
 	Data   Topic                  `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // TopicTimeSeriesResponse is the response envelope returned by the topic
@@ -69,6 +72,7 @@ type TopicResponse struct {
 type TopicTimeSeriesResponse struct {
 	Data   []TimeSeriesPoint      `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // Creator represents a social media creator/influencer profile as
@@ -95,14 +99,14 @@ type TopicCreatorsResponse struct {
 // NewsItem represents a news article associated with a topic or
 // category.
 type NewsItem struct {
-	ID              string  `json:"id,omitempty"`
-	PostTitle       string  `json:"post_title,omitempty"`
-	PostLink        string  `json:"post_link,omitempty"`
-	PostType        string  `json:"post_type,omitempty"`
-	PostSentiment   float64 `json:"post_sentiment,omitempty"`
-	Interactions24h float64 `json:"interactions_24h,omitempty"`
-	CreatedTime     int64   `json:"post_created,omitempty"`
-	CreatorName     string  `json:"creator_name,omitempty"`
+	ID              *string  `json:"id,omitempty"`
+	PostTitle       *string  `json:"post_title,omitempty"`
+	PostLink        *string  `json:"post_link,omitempty"`
+	PostType        *string  `json:"post_type,omitempty"`
+	PostSentiment   *float64 `json:"post_sentiment,omitempty"`
+	Interactions24h *float64 `json:"interactions_24h,omitempty"`
+	CreatedTime     *int64   `json:"post_created,omitempty"`
+	CreatorName     *string  `json:"creator_name,omitempty"`
 }
 
 // TopicNewsResponse is the response envelope returned by the topic news
@@ -115,16 +119,18 @@ type TopicNewsResponse struct {
 // Post represents a social media post associated with a topic, category,
 // or creator.
 type Post struct {
-	ID              string  `json:"id,omitempty"`
-	PostType        string  `json:"post_type,omitempty"`
-	PostTitle       string  `json:"post_title,omitempty"`
-	PostLink        string  `json:"post_link,omitempty"`
-	PostSentiment   float64 `json:"post_sentiment,omitempty"`
-	Interactions24h float64 `json:"interactions_24h,omitempty"`
-	CreatedTime     int64   `json:"post_created,omitempty"`
-	CreatorID       string  `json:"creator_id,omitempty"`
-	CreatorName     string  `json:"creator_name,omitempty"`
-	CreatorNetwork  string  `json:"creator_network,omitempty"`
+	ID        *string `json:"id,omitempty"`
+	PostType  *string `json:"post_type,omitempty"`
+	PostTitle *string `json:"post_title,omitempty"`
+	PostLink  *string `json:"post_link,omitempty"`
+	// PostSentiment is a 1--5 score, where 3 is neutral. It is not the
+	// 0--100 aggregate topic or coin sentiment score.
+	PostSentiment   *float64 `json:"post_sentiment,omitempty"`
+	Interactions24h *float64 `json:"interactions_24h,omitempty"`
+	CreatedTime     *int64   `json:"post_created,omitempty"`
+	CreatorID       *string  `json:"creator_id,omitempty"`
+	CreatorName     *string  `json:"creator_name,omitempty"`
+	CreatorNetwork  *string  `json:"creator_network,omitempty"`
 }
 
 // TopicPostsResponse is the response envelope returned by the topic
@@ -132,6 +138,7 @@ type Post struct {
 type TopicPostsResponse struct {
 	Data   []Post                 `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // WhatsUp represents an AI-generated natural-language summary of recent
@@ -151,11 +158,16 @@ type TopicWhatsUpResponse struct {
 // TopicListItem represents a summarized entry from the topics list
 // endpoint.
 type TopicListItem struct {
-	Topic           string  `json:"topic,omitempty"`
-	Title           string  `json:"title,omitempty"`
-	TopicRank       int     `json:"topic_rank,omitempty"`
-	Interactions24h float64 `json:"interactions_24h,omitempty"`
-	NumContributors int     `json:"num_contributors,omitempty"`
+	Topic     string `json:"topic,omitempty"`
+	Title     string `json:"title,omitempty"`
+	TopicRank int    `json:"topic_rank,omitempty"`
+	// TopicRank1hPrevious and TopicRank24hPrevious are separate prior-rank
+	// horizons in the topic-ranking universe; they must not be collapsed.
+	TopicRank1hPrevious  *int    `json:"topic_rank_1h_previous,omitempty"`
+	TopicRank24hPrevious *int    `json:"topic_rank_24h_previous,omitempty"`
+	Interactions24h      float64 `json:"interactions_24h,omitempty"`
+	NumContributors      int     `json:"num_contributors,omitempty"`
+	NumPosts             *int    `json:"num_posts,omitempty"`
 }
 
 // TopicsListResponse is the response envelope returned by
@@ -163,6 +175,7 @@ type TopicListItem struct {
 type TopicsListResponse struct {
 	Data   []TopicListItem        `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // Get retrieves the 24-hour social summary for a topic:

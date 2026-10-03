@@ -22,21 +22,23 @@ type Coin struct {
 	Volume24h         float64 `json:"volume_24h,omitempty"`
 	VolatilityDay     float64 `json:"volatility,omitempty"`
 	CirculatingSupply float64 `json:"circulating_supply,omitempty"`
-	MaxSupply         float64 `json:"max_supply,omitempty"`
-	PercentChange1h   float64 `json:"percent_change_1h,omitempty"`
-	PercentChange24h  float64 `json:"percent_change_24h,omitempty"`
-	PercentChange7d   float64 `json:"percent_change_7d,omitempty"`
-	PercentChange30d  float64 `json:"percent_change_30d,omitempty"`
-	MarketCap         float64 `json:"market_cap,omitempty"`
-	MarketCapRank     int     `json:"market_cap_rank,omitempty"`
-	Interactions24h   float64 `json:"interactions_24h,omitempty"`
-	SocialVolume24h   float64 `json:"social_volume_24h,omitempty"`
-	SocialDominance   float64 `json:"social_dominance,omitempty"`
-	MarketDominance   float64 `json:"market_dominance,omitempty"`
-	GalaxyScore       float64 `json:"galaxy_score,omitempty"`
-	AltRank           int     `json:"alt_rank,omitempty"`
-	SentimentRelative float64 `json:"sentiment,omitempty"`
-	Categories        string  `json:"categories,omitempty"`
+	// MaxSupply is nil when the provider reports an uncapped or unavailable
+	// maximum supply. A non-nil pointer preserves a reported value of zero.
+	MaxSupply         *float64 `json:"max_supply,omitempty"`
+	PercentChange1h   float64  `json:"percent_change_1h,omitempty"`
+	PercentChange24h  float64  `json:"percent_change_24h,omitempty"`
+	PercentChange7d   float64  `json:"percent_change_7d,omitempty"`
+	PercentChange30d  float64  `json:"percent_change_30d,omitempty"`
+	MarketCap         float64  `json:"market_cap,omitempty"`
+	MarketCapRank     int      `json:"market_cap_rank,omitempty"`
+	Interactions24h   float64  `json:"interactions_24h,omitempty"`
+	SocialVolume24h   float64  `json:"social_volume_24h,omitempty"`
+	SocialDominance   float64  `json:"social_dominance,omitempty"`
+	MarketDominance   float64  `json:"market_dominance,omitempty"`
+	GalaxyScore       float64  `json:"galaxy_score,omitempty"`
+	AltRank           int      `json:"alt_rank,omitempty"`
+	SentimentRelative float64  `json:"sentiment,omitempty"`
+	Categories        string   `json:"categories,omitempty"`
 	Blockchains       []struct {
 		Type     string `json:"type,omitempty"`
 		Network  string `json:"network,omitempty"`
@@ -52,6 +54,7 @@ type Coin struct {
 type CoinListResponse struct {
 	Data   []Coin                 `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // CoinResponse is the response envelope returned when fetching a single
@@ -59,6 +62,7 @@ type CoinListResponse struct {
 type CoinResponse struct {
 	Data   Coin                   `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // CoinMeta contains descriptive metadata about a coin such as its
@@ -82,11 +86,12 @@ type CoinMeta struct {
 type CoinMetaResponse struct {
 	Data   CoinMeta               `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
-// TimeSeriesPoint represents a single bucketed data point in a
-// time-series response, containing a Unix timestamp plus a flexible set
-// of numeric metrics.
+// TimeSeriesPoint represents a single bucketed data point in a time-series
+// response. Time is a Unix timestamp in seconds; it is distinct from response
+// config timestamps such as generated, start, and end.
 type TimeSeriesPoint struct {
 	Time            int64   `json:"time,omitempty"`
 	Open            float64 `json:"open,omitempty"`
@@ -102,8 +107,12 @@ type TimeSeriesPoint struct {
 	AltRank         int     `json:"alt_rank,omitempty"`
 	Sentiment       float64 `json:"sentiment,omitempty"`
 	SpamCount       float64 `json:"spam,omitempty"`
-	Posts           float64 `json:"posts_created,omitempty"`
-	Contributors    float64 `json:"contributors_active,omitempty"`
+	// PostsActive is the number of posts with interactions in the bucket.
+	PostsActive *int64 `json:"posts_active,omitempty"`
+	// PostsCreated is the number of posts created in the bucket. It is not a
+	// substitute for social_volume.
+	PostsCreated *int64 `json:"posts_created,omitempty"`
+	Contributors *int64 `json:"contributors_active,omitempty"`
 }
 
 // CoinTimeSeriesResponse is the response envelope returned by the coin
@@ -111,6 +120,7 @@ type TimeSeriesPoint struct {
 type CoinTimeSeriesResponse struct {
 	Data   []TimeSeriesPoint      `json:"data"`
 	Config map[string]interface{} `json:"config,omitempty"`
+	rawReceipt
 }
 
 // CoinsListParams holds optional query parameters accepted by the coins

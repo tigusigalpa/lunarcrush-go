@@ -24,7 +24,7 @@ func TestPostsService_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].PostTitle != "BTC to the moon" {
+	if len(resp.Data) != 1 || resp.Data[0].PostTitle == nil || *resp.Data[0].PostTitle != "BTC to the moon" {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }
@@ -43,7 +43,7 @@ func TestPostsService_TimeSeries(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(resp.Data) != 1 || resp.Data[0].Posts != 50 {
+	if len(resp.Data) != 1 || resp.Data[0].PostsCreated == nil || *resp.Data[0].PostsCreated != 50 {
 		t.Errorf("unexpected data: %+v", resp.Data)
 	}
 }
